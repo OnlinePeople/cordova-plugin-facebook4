@@ -17,6 +17,7 @@ import com.facebook.FacebookServiceException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.appevents.AppEventsLogger;
+import com.facebook.applinks.AppLinkData;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.share.ShareApi;
@@ -310,8 +311,28 @@ public class ConnectPlugin extends CordovaPlugin {
             executeAppInvite(args, callbackContext);
 
             return true;
+        } else if (action.equals("fetchDeferredAppLinkData")) {
+            executeFetchDeferredAppLinkData(args, callbackContext);
+
+            return true;
         }
         return false;
+    }
+
+    private void executeFetchDeferredAppLinkData(JSONArray args, final CallbackContext callbackContext) {
+        AppLinkData.fetchDeferredAppLinkData(cordova.getActivity().getApplicationContext(),
+                new AppLinkData.CompletionHandler() {
+                    @Override
+                    public void onDeferredAppLinkDataFetched(AppLinkData appLinkData) {
+                        if (appLinkData != null) {
+                            Bundle bundle = appLinkData.getArgumentBundle();
+                            Log.i("DEBUG_FACEBOOK_SDK", bundle.toString());
+                            callbackContext.success(bundle.toString());
+                        } else {
+                            Log.i("DEBUG_FACEBOOK_SDK", "AppLinkData is Null");
+                        }
+                    }
+                });
     }
 
     private void executeAppInvite(JSONArray args, CallbackContext callbackContext) {
