@@ -325,11 +325,12 @@ public class ConnectPlugin extends CordovaPlugin {
                     @Override
                     public void onDeferredAppLinkDataFetched(AppLinkData appLinkData) {
                         if (appLinkData != null) {
-                            Bundle bundle = appLinkData.getArgumentBundle();
-                            Log.i("DEBUG_FACEBOOK_SDK", bundle.toString());
-                            callbackContext.success(bundle.toString());
+                            String url = appLinkData.getTargetUri().toString();
+                            Log.i("DEBUG_FACEBOOK_SDK",url);
+                            callbackContext.success(url);
                         } else {
                             Log.i("DEBUG_FACEBOOK_SDK", "AppLinkData is Null");
+                            callbackContext.success("");
                         }
                     }
                 });
